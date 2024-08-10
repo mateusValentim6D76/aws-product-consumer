@@ -1,0 +1,68 @@
+import java.util.jar.JarInputStream
+
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '3.3.2'
+    id 'io.spring.dependency-management' version '1.1.6'
+    id 'com.bmuschko.docker-spring-boot-application' version '8.0.0'
+
+}
+
+group = 'br.com.mv.cloud.aws'
+version = '0.0.1-SNAPSHOT'
+
+bootJar {
+    archiveBaseName.set('aws-mv-product-consumer')
+    archiveVersion.set('1.0.0')
+    manifest {
+        attributes 'Main-Class': 'br.com.mv.cloud.aws.product_consumer.ProductConsumerApplication'
+    }
+}
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
+
+docker {
+    springBootApplication {
+        baseImage = 'openjdk:17-jdk-alpine'
+        ports = [8081]
+        images = ["mateusvalentim/aws-mv-product-consumer:1.0.0".toString()]
+        //images = ["${project.group}/${bootJar.archiveBaseName.get()}:${bootJar.archiveVersion.get()}"]
+    }
+}
+
+tasks.register('listJarContents') {
+    doLast {
+        def jarFile = file("$buildDir/libs/aws-mv-product-consumer-1.0.0.jar")
+        if (jarFile.exists()) {
+            println "Contents of $jarFile:"
+            java.util.jar.JarFile jar = new java.util.jar.JarFile(jarFile)
+            jar.entries().each { entry ->
+                println entry.name
+            }
+            jar.close()
+        } else {
+            println "JAR file not found!"
+        }
+    }
+}
+
+
+
