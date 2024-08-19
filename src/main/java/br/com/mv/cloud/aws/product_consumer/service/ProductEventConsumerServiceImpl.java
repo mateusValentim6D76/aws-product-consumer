@@ -7,6 +7,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jms.annotation.JmsListener;
 
 import javax.jms.JMSException;
@@ -17,6 +18,7 @@ public class ProductEventConsumerServiceImpl implements ProductEventConsumerServ
     private static final Logger log = LoggerFactory.getLogger(ProductEventConsumerService.class);
     private final ObjectMapper objectMapper;
 
+    @Autowired
     public ProductEventConsumerServiceImpl(ObjectMapper objectMapper) {
         this.objectMapper = objectMapper;
     }
@@ -30,8 +32,9 @@ public class ProductEventConsumerServiceImpl implements ProductEventConsumerServ
 
         ProductEvent productEvent = objectMapper.readValue(topicEnvelope.getData(), ProductEvent.class);
 
-        log.info("Product event received: - Event {} - ProductId: {} - "
+        log.info("Product event received: - Event {} - ProductId: {} - MessageId: {} "
                 , topicEnvelope.getEventType()
-                , productEvent.getProductId());
+                , productEvent.getProductId(),
+                snsMessage.getMessageId());
     }
 }
