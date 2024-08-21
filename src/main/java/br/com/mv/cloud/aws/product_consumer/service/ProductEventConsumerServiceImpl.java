@@ -1,40 +1,41 @@
 package br.com.mv.cloud.aws.product_consumer.service;
 
-import br.com.mv.cloud.aws.product_consumer.model.ProductEvent;
-import br.com.mv.cloud.aws.product_consumer.model.SnsMessage;
-import br.com.mv.cloud.aws.product_consumer.model.TopicEnvelope;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import br.com.mv.cloud.aws.product_consumer.model.ProductEventLogDTO;
+import br.com.mv.cloud.aws.product_consumer.repository.ProductEventLogRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jms.annotation.JmsListener;
+import org.springframework.stereotype.Service;
 
-import javax.jms.JMSException;
-import javax.jms.TextMessage;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
+@Service
 public class ProductEventConsumerServiceImpl implements ProductEventConsumerService {
 
-    private static final Logger log = LoggerFactory.getLogger(ProductEventConsumerService.class);
-    private final ObjectMapper objectMapper;
-
     @Autowired
-    public ProductEventConsumerServiceImpl(ObjectMapper objectMapper) {
-        this.objectMapper = objectMapper;
+    ProductEventLogRepository productEventLogRepository;
+
+    public List<ProductEventLogDTO> findAll() {
+        return StreamSupport.stream(productEventLogRepository.findAll()
+                        .spliterator(), false)
+                .map(ProductEventLogDTO::new)
+                .collect(Collectors.toList());
     }
 
     @Override
-    @JmsListener(destination = "${aws.sqs.queue.product.events.name}")
-    public void receiveProductEvent(TextMessage textMessage) throws JMSException, JsonProcessingException {
-        SnsMessage snsMessage = objectMapper.readValue(textMessage.getText(), SnsMessage.class);
+    public List<ProductEventLogDTO> findAllByPk(String code) {
+        return productEventLogRepository
+                .findAllByPk(code)
+                .stream()
+                .map(ProductEventLogDTO::new)
+                .collect(Collectors.toList());
+    }
 
-        TopicEnvelope topicEnvelope = objectMapper.readValue(snsMessage.getMessage(), TopicEnvelope.class);
-
-        ProductEvent productEvent = objectMapper.readValue(topicEnvelope.getData(), ProductEvent.class);
-
-        log.info("Product event received: - Event {} - ProductId: {} - MessageId: {} "
-                , topicEnvelope.getEventType()
-                , productEvent.getProductId(),
-                snsMessage.getMessageId());
+    @Override
+    public List<ProductEventLogDTO> findAllByPkAndStartsWith(String code, String eventType) {
+        return productEventLogRepository.findAllByPkAndStartsWith(code, eventType)
+                .stream()
+                .map(ProductEventLogDTO::new)
+                .collect(Collectors.toList());
     }
 }

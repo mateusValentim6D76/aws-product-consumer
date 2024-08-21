@@ -1,12 +1,13 @@
 package br.com.mv.cloud.aws.product_consumer.service;
 
 
-import com.fasterxml.jackson.core.JsonProcessingException;
+import br.com.mv.cloud.aws.product_consumer.model.ProductEventLog;
+import br.com.mv.cloud.aws.product_consumer.model.ProductEventLogDTO;
 
-import javax.jms.JMSException;
-import javax.jms.TextMessage;
+import java.util.List;
 
 public interface ProductEventConsumerService {
 
-    void receiveProductEvent(TextMessage textMessage) throws JMSException, JsonProcessingException;
-}
+    List<ProductEventLogDTO> findAllByPk(String code);
+
+    List<ProductEventLogDTO> findAllByPkAndStartsWith(String code, String eventType);}
