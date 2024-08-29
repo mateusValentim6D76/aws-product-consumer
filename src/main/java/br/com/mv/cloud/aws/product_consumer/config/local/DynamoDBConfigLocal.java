@@ -48,12 +48,14 @@ public class DynamoDBConfigLocal {
                 .withTableName("product-events")
                 .withAttributeDefinitions(attributeDefinitionList)
                 .withKeySchema(keySchemaElements)
-                .withBillingMode(BillingMode.PROVISIONED);
-
-        Table table = dynamoDB.createTable(createTableRequest);
+                .withBillingMode(BillingMode.PROVISIONED)
+                .withProvisionedThroughput(new ProvisionedThroughput(4L, 4L));
 
         try {
+            Table table = dynamoDB.createTable(createTableRequest);
             table.waitForActive();
+        } catch (ResourceInUseException e) {
+            System.out.println("Tabela já em uso: " + e);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }

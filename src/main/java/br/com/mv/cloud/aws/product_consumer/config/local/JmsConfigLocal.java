@@ -21,7 +21,7 @@ import javax.jms.Session;
 
 @Configuration
 @EnableJms
-@Profile("!local")
+@Profile("local")
 public class JmsConfigLocal {
 
     @Value("${aws.region}")

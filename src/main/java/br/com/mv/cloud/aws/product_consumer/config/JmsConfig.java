@@ -23,19 +23,24 @@ public class JmsConfig {
     @Value("${aws.region}")
     private String awsRegion;
 
+    private SQSConnectionFactory sqsConnectionFactory;
 
     @Bean
     public DefaultJmsListenerContainerFactory jmsListenerContainerFactory() {
-        SQSConnectionFactory sqsConnectionFactory = new SQSConnectionFactory(new ProviderConfiguration(),
-                AmazonSQSClientBuilder.standard().withRegion(awsRegion).withCredentials(new DefaultAWSCredentialsProviderChain()).build());
+        sqsConnectionFactory = new SQSConnectionFactory(
+                new ProviderConfiguration(),
+                AmazonSQSClientBuilder.standard()
+                        .withRegion(awsRegion)
+                        .withCredentials(new DefaultAWSCredentialsProviderChain())
+                        .build());
 
-        DefaultJmsListenerContainerFactory factory = new DefaultJmsListenerContainerFactory();
+        DefaultJmsListenerContainerFactory factory =
+                new DefaultJmsListenerContainerFactory();
         factory.setConnectionFactory(sqsConnectionFactory);
         factory.setDestinationResolver(new DynamicDestinationResolver());
-        //numero de thread por fila, consumindo as msgs da fila
         factory.setConcurrency("2");
-        //quando receber a mensagem da fila e tratar, o JMS ja da o reconhecimento que a msg foi tratada
         factory.setSessionAcknowledgeMode(Session.CLIENT_ACKNOWLEDGE);
+
         return factory;
     }
 }

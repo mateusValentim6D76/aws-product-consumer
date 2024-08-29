@@ -9,11 +9,19 @@ import lombok.Setter;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class SnsMessage {
-
+    @JsonProperty("Message")
     private String message;
+
+    @JsonProperty("Type")
     private String type;
+
+    @JsonProperty("TopicArn")
     private String topicArn;
+
+    @JsonProperty("Timestamp")
     private String timestamp;
+
+    @JsonProperty("MessageId")
     private String messageId;
 
     public String getMessage() {
@@ -56,3 +64,4 @@ public class SnsMessage {
         this.messageId = messageId;
     }
 }
+

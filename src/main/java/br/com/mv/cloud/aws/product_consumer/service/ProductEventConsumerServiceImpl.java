@@ -5,6 +5,7 @@ import br.com.mv.cloud.aws.product_consumer.repository.ProductEventLogRepository
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -15,6 +16,7 @@ public class ProductEventConsumerServiceImpl implements ProductEventConsumerServ
     @Autowired
     ProductEventLogRepository productEventLogRepository;
 
+    @Override
     public List<ProductEventLogDTO> findAll() {
         return StreamSupport.stream(productEventLogRepository.findAll()
                         .spliterator(), false)
@@ -24,8 +26,7 @@ public class ProductEventConsumerServiceImpl implements ProductEventConsumerServ
 
     @Override
     public List<ProductEventLogDTO> findAllByPk(String code) {
-        return productEventLogRepository
-                .findAllByPk(code)
+        return productEventLogRepository.findAllByPk(code)
                 .stream()
                 .map(ProductEventLogDTO::new)
                 .collect(Collectors.toList());
@@ -33,7 +34,7 @@ public class ProductEventConsumerServiceImpl implements ProductEventConsumerServ
 
     @Override
     public List<ProductEventLogDTO> findAllByPkAndStartsWith(String code, String eventType) {
-        return productEventLogRepository.findAllByPkAndStartsWith(code, eventType)
+        return productEventLogRepository.findAllByPkAndSkStartsWith(code, eventType)
                 .stream()
                 .map(ProductEventLogDTO::new)
                 .collect(Collectors.toList());

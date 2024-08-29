@@ -40,6 +40,6 @@ public class DynamoDBConfig {
     public AmazonDynamoDB amazonDynamoDB() {
         return AmazonDynamoDBClientBuilder.standard()
                 .withCredentials(new DefaultAWSCredentialsProviderChain())
-                .withRegion(Regions.fromName(awsRegion)).build();
+                .withRegion(awsRegion).build();
     }
 }

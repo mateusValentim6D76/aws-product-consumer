@@ -10,4 +10,7 @@ public interface ProductEventConsumerService {
 
     List<ProductEventLogDTO> findAllByPk(String code);
 
-    List<ProductEventLogDTO> findAllByPkAndStartsWith(String code, String eventType);}
+    List<ProductEventLogDTO> findAllByPkAndStartsWith(String code, String eventType);
+
+    List<ProductEventLogDTO> findAll();
+}

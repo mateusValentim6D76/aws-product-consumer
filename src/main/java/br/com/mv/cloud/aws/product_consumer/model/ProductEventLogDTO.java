@@ -1,23 +1,44 @@
 package br.com.mv.cloud.aws.product_consumer.model;
 
 import br.com.mv.cloud.aws.product_consumer.enums.EventTypeInform;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-@Getter
 public class ProductEventLogDTO {
 
     private final String code;
+    private final EventTypeInform eventType;
     private final long productId;
-    private final EventTypeInform enventType;
     private final String username;
     private final long timestamp;
 
     public ProductEventLogDTO(ProductEventLog productEventLog) {
         this.code = productEventLog.getPk();
+        this.eventType = productEventLog.getEventTypeInform();
         this.productId = productEventLog.getProductId();
-        this.enventType = productEventLog.getEventTypeInform();
         this.username = productEventLog.getUserName();
         this.timestamp = productEventLog.getTimestamp();
     }
 
+    public String getCode() {
+        return code;
+    }
+
+    public EventTypeInform getEventType() {
+        return eventType;
+    }
+
+    public long getProductId() {
+        return productId;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public long getTimestamp() {
+        return timestamp;
+    }
 }

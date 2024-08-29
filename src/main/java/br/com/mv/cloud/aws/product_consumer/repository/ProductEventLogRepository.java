@@ -12,5 +12,5 @@ public interface ProductEventLogRepository extends CrudRepository<ProductEventLo
 
     List<ProductEventLog> findAllByPk(String code);
 
-    List<ProductEventLog> findAllByPkAndStartsWith(String code, String eventType);
+    List<ProductEventLog> findAllByPkAndSkStartsWith(String code, String eventType);
 }
