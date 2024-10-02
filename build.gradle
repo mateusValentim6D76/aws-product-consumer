@@ -53,7 +53,7 @@ docker {
     springBootApplication {
         baseImage = 'openjdk:17-jdk-alpine'
         ports = [8081]
-        images = ["mateusvalentim/aws-mv-product-consumer:1.1.0".toString()]
+        images = ["mateusvalentim/aws-mv-product-consumer:1.2.0".toString()]
         //images = ["${project.group}/${bootJar.archiveBaseName.get()}:${bootJar.archiveVersion.get()}"]
     }
 }
